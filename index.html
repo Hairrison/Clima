@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="css.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+    <title>Clima Tempo</title>
+  </head>
+  <body>
+
+    <div class="container-fluid">
+      
+        <div class="row">
+        
+          <div class="col-lg-10">
+          
+          </div>
+  
+          <div class="col-lg-2 order-1 bg">
+            <div id="MyClockDisplay" class="clock" onload="showTime()"></div>
+
+            <div class="text-center logo"><img src="logo.png"></div>
+
+            <!-- Card -->
+            <div class="card weater">
+              <div class="city-selected">
+                <article>
+    
+                  <div class="info">
+                    <div class="city"></div>
+                    <div class="temp"><span  id="cidade_1_temp"></span><img id="nuvens" src=""></div>
+  
+                    <div class="wind">
+                      <span><i class="fas fa-wind"></i> <span id="cidade_1_vento"></span> km/h</span>
+                    </div>
+                  </div>
+
+                </article>
+                
+              </div>
+    
+              <div class="days">
+                <div class="row row-no-gutter">
+                  <div class="col-md-4">
+                    <div class="day">
+                      <h1>Mínima</h1>
+                      <div id="minima"></div>
+                    </div>
+                  </div>
+    
+                  <div class="col-md-4">
+                    <div class="day">
+                      <h1>Máxima</h1>
+                      <div id="maxima"></div>
+                    </div>
+                  </div>
+    
+                  <div class="col-md-4">
+                    <div class="day">
+                      <h1>Umidade</h1>
+                      <i class="fas fa-2x fa-cloud-rain"></i>
+                    </div>
+                  </div>
+    
+                </div>
+              </div>
+            </div>
+            <!-- Card -->
+          </div><!-- col-lg-2 -->
+
+        </div><!-- row -->
+      
+    </div><!-- Container -->
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+
+
+    //Update Clima
+    var URL_IMG = "https://openweathermap.org/img/wn/";
+    var API_KEY = "7c9529f70c24fa0155a42c94a550e0de";
+
+    function Get_temp(Cidade){
+      $.ajax({
+              type: 'POST',
+              url: "http://api.openweathermap.org/data/2.5/weather?q="+Cidade+"&APPID="+API_KEY+"&units=metric&lang=pt_Br",
+              dataType: "json",
+              
+              success: function(data) {
+                $("#cidade_1_temp").html(parseInt(data.main.temp)+"°");
+                $("#cidade_1_vento").html(data.wind.speed);
+                $(".city").html(data.name);
+                $("#minima").html(parseInt(data.main.temp_min)+"°");
+                $("#maxima").html(parseInt(data.main.temp_max)+"°");
+                data.weather.forEach(element => {
+                  $("#nuvens").attr("src",URL_IMG+element.icon+".png");
+                }); 
+                
+              },error: function() {
+        
+              }
+
+      });
+    }
+    Get_temp("Porto%20Alegre");
+    //Relógio
+    function showTime(){
+      var date = new Date();
+      var h = date.getHours(); // 0 - 23
+      var m = date.getMinutes(); // 0 - 59
+      var s = date.getSeconds(); // 0 - 59
+      var session = "AM";
+      
+      if(h == 0){
+          h = 12;
+      }
+      
+      if(h > 12){
+          h = h - 12;
+          session = "PM";
+      }
+      
+      h = (h < 10) ? "0" + h : h;
+      m = (m < 10) ? "0" + m : m;
+      s = (s < 10) ? "0" + s : s;
+      
+      var time = h + ":" + m + ":" + s + " " + session;
+      document.getElementById("MyClockDisplay").innerText = time;
+      document.getElementById("MyClockDisplay").textContent = time;
+      
+      setTimeout(showTime, 500);
+      
+  }
+  
+  showTime();
+
+  </script>
+  </body>
+</html>
